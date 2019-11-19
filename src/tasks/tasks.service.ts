@@ -1,7 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Task, TasksStatus } from './task.model';
 import * as uuid from 'uuid/v1';
-import { CreateTaskDto } from './dto/create-task.dto';
+import { TaskDto } from './dto/task.dto';
+import { GetTasksFilterDto } from './dto/get-tasks-filter.dto';
 
 @Injectable()
 export class TasksService {
@@ -11,12 +12,36 @@ export class TasksService {
     return this.tasks;
   }
 
-  getTaskById(id: string): Task {
-    return this.tasks.find(task => task.id === id);
+  getTasksWithFilter(filterDto: GetTasksFilterDto): Task[] {
+    const { status, search } = filterDto;
+    let tasks = this.getAllTasks();
+
+    if (status) {
+      tasks = tasks.filter(task => task.status === status);
+    }
+
+    if (search) {
+      tasks = tasks.filter(
+        task =>
+          task.title.toLowerCase().includes(search.toLowerCase()) ||
+          task.description.toLowerCase().includes(search.toLowerCase()),
+      );
+    }
+    return tasks;
   }
 
-  createTask(createTaskDto: CreateTaskDto): Task {
-    const { title, description } = createTaskDto;
+  taskNotFound(id) {
+    throw new NotFoundException(`Task with id: '${id}' not found`);
+  }
+
+  getTaskById(id: string): Task {
+    const task = this.tasks.find(task => task.id === id);
+    if (!task) this.taskNotFound(id);
+    return task;
+  }
+
+  createTask(taskDto: TaskDto): Task {
+    const { title, description } = taskDto;
     const task: Task = {
       id: uuid(),
       title,
@@ -28,19 +53,16 @@ export class TasksService {
   }
 
   deleteTask(id: string): any {
-    const index = this.tasks.findIndex(task => task.id === id);
-    if (index === -1)
-      return {
-        message: 'Not found!',
-      };
+    const task = this.getTaskById(id);
+    if (!task) this.taskNotFound(id);
+    this.tasks = this.tasks.filter(item => item.id !== id);
+    return task;
+  }
 
-    this.tasks.splice(
-      this.tasks.findIndex(task => task.id === id),
-      1,
-    );
-
-    return {
-      message: 'Task removed succesfully!',
-    };
+  updateTaskStatus(id: string, status: string): any {
+    const task = this.getTaskById(id);
+    if (!task) this.taskNotFound(id);
+    task.status = TasksStatus[status];
+    return task;
   }
 }
