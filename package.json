@@ -22,13 +22,22 @@
   "dependencies": {
     "@nestjs/common": "^6.7.2",
     "@nestjs/core": "^6.7.2",
+    "@nestjs/jwt": "^6.1.1",
+    "@nestjs/passport": "^6.1.0",
     "@nestjs/platform-express": "^6.7.2",
+    "@nestjs/typeorm": "^6.2.0",
+    "@types/bcrypt": "^3.0.0",
+    "@types/passport-jwt": "^3.0.3",
+    "bcrypt": "^3.0.7",
     "class-transformer": "^0.2.3",
     "class-validator": "^0.11.0",
+    "passport": "^0.4.0",
+    "passport-jwt": "^4.0.0",
+    "pg": "^7.13.0",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.0",
     "rxjs": "^6.5.3",
-    "uuid": "^3.3.3"
+    "typeorm": "^0.2.20"
   },
   "devDependencies": {
     "@nestjs/cli": "^6.9.0",
