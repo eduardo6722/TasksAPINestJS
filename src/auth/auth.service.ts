@@ -15,13 +15,11 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  signUp(authCredencialsDto: AuthCredencialsDto): Promise<void> {
+  signUp(authCredencialsDto: AuthCredencialsDto): Promise<{}> {
     return this.userRepository.signUp(authCredencialsDto);
   }
 
-  async signIn(
-    authCredencialsDto: AuthCredencialsDto,
-  ): Promise<{ acessToken: string }> {
+  async signIn(authCredencialsDto: AuthCredencialsDto): Promise<{}> {
     const user: User = await this.userRepository.validateUserPassword(
       authCredencialsDto,
     );
@@ -31,8 +29,8 @@ export class AuthService {
     }
 
     const payload: JwtPayload = { id: user.id, username: user.username };
-    const acessToken = await this.jwtService.sign(payload);
+    const accessToken: string = await this.jwtService.sign(payload);
 
-    return { acessToken };
+    return { accessToken };
   }
 }

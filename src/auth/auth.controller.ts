@@ -8,7 +8,6 @@ import {
 } from '@nestjs/common';
 import { AuthCredencialsDto } from './dto/auth-credencials.dto';
 import { AuthService } from './auth.service';
-import { JwtPayload } from './jwt-payload.interface';
 import { AuthGuard } from '@nestjs/passport';
 import { GetUser } from './get-user.decorator';
 import { User } from './user.entity';
@@ -20,14 +19,12 @@ export class AuthController {
   @Post('signup')
   signUp(
     @Body(ValidationPipe) authCredencialsDto: AuthCredencialsDto,
-  ): Promise<void> {
+  ): Promise<{}> {
     return this.authService.signUp(authCredencialsDto);
   }
 
   @Post('signin')
-  signIn(
-    @Body() authCredencialsDto: AuthCredencialsDto,
-  ): Promise<{ acessToken: string }> {
+  signIn(@Body() authCredencialsDto: AuthCredencialsDto): Promise<{}> {
     return this.authService.signIn(authCredencialsDto);
   }
 
